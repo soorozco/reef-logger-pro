@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ReefLogger Pro</title>
+
+    <!-- ✅ Configuración previa de Tailwind para modo oscuro por clase -->
+    <script>
+      window.tailwind = {
+        config: {
+          darkMode: 'class'
+        }
+      };
+    </script>
+
+    <!-- ✅ Script que aplica el modo oscuro antes de montar React -->
+    <script>
+      try {
+        const saved = localStorage.getItem('reefLoggerPro.theme');
+        if (saved) {
+          const theme = JSON.parse(saved);
+          if (theme === 'dark') document.documentElement.classList.add('dark');
+        }
+      } catch (e) {
+        console.warn('Error al restaurar el tema:', e);
+      }
+    </script>
+
+    <!-- Tailwind por CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Ícono opcional -->
+    <link rel="icon" type="image/png" href="/favicon.png" />
+  </head>
+  <body class="bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors">
+    <div id="root"></div>
+
+    <!-- React + Vite bundle -->
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
