@@ -1,9 +1,40 @@
 {
+  "name": "reef-logger-pro",
+  "version": "1.0.0",
+  "description": "Aplicación React para control de parámetros, dosificación y planificación de un acuario marino, con sincronización Neon y despliegue en Vercel.",
+  "main": "src/main.tsx",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
     "vercel-build": "vite build"
-  }
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^0.9.0",
+    "lucide-react": "^0.424.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "recharts": "^2.8.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.5",
+    "@types/react-dom": "^18.3.2",
+    "@vitejs/plugin-react": "^4.3.1",
+    "typescript": "^5.4.5",
+    "vite": "^5.4.10"
+  },
+  "keywords": [
+    "reef",
+    "aquarium",
+    "logger",
+    "react",
+    "vite",
+    "vercel",
+    "neon",
+    "postgresql"
+  ],
+  "author": "Sergio Omar Orozco",
+  "license": "MIT"
 }
+
