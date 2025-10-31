@@ -1,40 +1,30 @@
 // api/_db.js
 import { neon } from '@neondatabase/serverless';
 
-const connectionString = process.env.DATABASE_URL;
-if (!connectionString) {
-  console.warn('DATABASE_URL no está definido. Configúralo en Vercel / .env.local');
+const { NEON_URL } = process.env;
+if (!NEON_URL) {
+  throw new Error('Falta la variable de entorno NEON_URL');
 }
-export const sql = neon(connectionString);
+export const sql = neon(NEON_URL);
 
-// Helpers genéricos
-export async function list(table) {
-  // Ordena por created_at desc si existe; si no, ignora
-  try {
-    const rows = await sql`select * from ${sql(table)} order by created_at desc`;
-    return rows;
-  } catch {
-    const rows = await sql`select * from ${sql(table)}`;
-    return rows;
-  }
+// Helpers tabla "params"
+export async function listParams() {
+  return await sql/*sql*/`
+    select id, date, temp, salinity, ph, alk, ca, mg, no3, po4, ammonia, nitrite
+    from params
+    order by date desc, id desc
+  `;
+}
+export async function insertParam(b) {
+  const [row] = await sql/*sql*/`
+    insert into params (date, temp, salinity, ph, alk, ca, mg, no3, po4, ammonia, nitrite)
+    values (${b.date}, ${b.temp}, ${b.salinity}, ${b.ph}, ${b.alk}, ${b.ca}, ${b.mg}, ${b.no3}, ${b.po4}, ${b.ammonia}, ${b.nitrite})
+    returning id, date, temp, salinity, ph, alk, ca, mg, no3, po4, ammonia, nitrite
+  `;
+  return row;
+}
+export async function deleteParam(id) {
+  await sql/*sql*/`delete from params where id = ${id}`;
+  return { ok: true };
 }
 
-export async function remove(table, id) {
-  await sql`delete from ${sql(table)} where id = ${id}`;
-}
-
-// Body parser seguro
-export async function getBody(req) {
-  if (req.body && typeof req.body === 'object') return req.body;
-  if (req.body && typeof req.body === 'string') {
-    try { return JSON.parse(req.body); } catch { return {}; }
-  }
-  // Si Vercel no parseó, leemos el stream
-  return await new Promise((resolve) => {
-    let data = '';
-    req.on('data', (chunk) => (data += chunk));
-    req.on('end', () => {
-      try { resolve(data ? JSON.parse(data) : {}); } catch { resolve({}); }
-    });
-  });
-}
